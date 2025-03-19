@@ -28,6 +28,7 @@ struct WaylandData
     struct xdg_surface* xdg_surface;
     struct xdg_toplevel* xdg_toplevel;
 
+    bool wait_for_configure;
     uint8_t running;
     int fd;
 

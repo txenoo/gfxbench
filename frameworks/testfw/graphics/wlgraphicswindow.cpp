@@ -34,8 +34,8 @@ static const struct xdg_wm_base_listener wm_base_listener = { wm_ping };
 
 static void surface_configure(void* data, struct xdg_surface* xdg_surface, uint32_t serial)
 {
-    (void)data;
-
+    WaylandData *waylandData = static_cast<WaylandData*>(data);
+    waylandData->wait_for_configure = false;
     xdg_surface_ack_configure(xdg_surface, serial);
 }
 
@@ -60,7 +60,6 @@ static void toplevel_configure(void* data, struct xdg_toplevel* xdg_toplevel, in
         waylandData->height = height;
 
         wl_egl_window_resize(waylandData->eglWindow, width, height, 0, 0);
-        wl_surface_commit(waylandData->surf);
     }
 }
 
@@ -87,8 +86,6 @@ static void registry_add_object(void* data, wl_registry* registry, uint32_t name
     else if (strcmp(interface, xdg_wm_base_interface.name) == 0)
     {
         waylandData->xdg_wm_base = static_cast<xdg_wm_base*>(wl_registry_bind(registry, name, &xdg_wm_base_interface, 1));
-
-
         xdg_wm_base_add_listener(waylandData->xdg_wm_base, &wm_base_listener, waylandData);
     }
 }
@@ -149,12 +146,16 @@ bool WLGraphicsWindow::create(int width, int height, const std::string& title)
     waylandData.surf = wl_compositor_create_surface(waylandData.compositor);
 
     waylandData.xdg_surface = xdg_wm_base_get_xdg_surface(waylandData.xdg_wm_base, waylandData.surf);
-    xdg_surface_add_listener(waylandData.xdg_surface, &surface_listener, NULL);
+    xdg_surface_add_listener(waylandData.xdg_surface, &surface_listener, &waylandData);
     waylandData.xdg_toplevel = xdg_surface_get_toplevel(waylandData.xdg_surface);
 
     xdg_toplevel_set_title(waylandData.xdg_toplevel, "testfwapp");
     xdg_toplevel_add_listener(waylandData.xdg_toplevel, &toplevel_listener, &waylandData);
     wl_surface_commit(waylandData.surf);
+    waylandData.wait_for_configure = true;
+
+    while (waylandData.wait_for_configure)
+	wl_display_roundtrip(waylandData.display);
 
 
     pollEvents();
@@ -197,6 +198,16 @@ void WLGraphicsWindow::destroy()
     {
         wl_egl_window_destroy(waylandData.eglWindow);
         waylandData.eglWindow = NULL;
+    }
+    if (waylandData.xdg_toplevel)
+    {
+        xdg_toplevel_destroy(waylandData.xdg_toplevel);
+	waylandData.xdg_toplevel = NULL;
+    }
+    if (waylandData.xdg_surface)
+    {
+        xdg_surface_destroy(waylandData.xdg_surface);
+	waylandData.xdg_surface = NULL;
     }
 
     if (waylandData.xdg_wm_base)
