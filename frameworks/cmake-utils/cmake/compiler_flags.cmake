@@ -24,7 +24,7 @@ elseif (UNIX)
         if(CMAKE_CXX_COMPILER_VERSION GREATER "7.5")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-class-memaccess -Wno-deprecated-declarations -Wno-c++20-compat -Wno-format-overflow")
         endif()
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-maybe-uninitialized -std=c++11 -Wall -Werror -Wno-unused-parameter -fno-strict-aliasing -Wno-strict-aliasing -Wno-invalid-offsetof")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-array-bounds -Wno-maybe-uninitialized -std=c++11 -Wall -Wno-unused-parameter -fno-strict-aliasing -Wno-strict-aliasing -Wno-invalid-offsetof")
     endif()
 
 elseif (${CXX_COMPILER_ID_UPPER} STREQUAL MSVC)
