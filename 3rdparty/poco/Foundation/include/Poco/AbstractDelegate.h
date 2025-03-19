@@ -83,6 +83,9 @@ public:
 	{
 		return this;
 	}
+
+protected:
+	void *_pTarget;
 };
 
 template <> 
@@ -122,6 +125,9 @@ public:
 	{
 		return this;
 	}
+
+protected:
+	void *_pTarget;
 };
 
 } // namespace Poco
