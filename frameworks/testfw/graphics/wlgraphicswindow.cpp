@@ -225,23 +225,28 @@ void WLGraphicsWindow::pollEvents()
 {
     int timeout = 0;
     struct pollfd fds = { 0 };
-    wl_display_dispatch_pending(waylandData.display);
+
+    while (wl_display_prepare_read(waylandData.display) != 0)
+        wl_display_dispatch_pending(waylandData.display);
     wl_display_flush(waylandData.display);
 
     fds.fd = waylandData.fd;
     fds.events = POLLIN | POLLOUT | POLLERR | POLLHUP;
 
-
     if (poll(&fds, 1, timeout) > 0)
     {
         if (fds.revents & (POLLERR | POLLHUP))
         {
+	    wl_display_cancel_read(waylandData.display);
+	    wl_display_disconnect(waylandData.display);
             close(waylandData.fd);
             waylandData.fd = -1;
         }
 
+	wl_display_read_events(waylandData.display);
+
         if (fds.revents & POLLIN)
-            wl_display_dispatch(waylandData.display);
+            wl_display_dispatch_pending(waylandData.display);
         if (fds.revents & POLLOUT)
             wl_display_flush(waylandData.display);
     }
