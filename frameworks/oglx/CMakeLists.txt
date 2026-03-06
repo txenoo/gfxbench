@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 if(1)
 	set(OGLX OGLX) # package name = variable prefix. Can be OGLX or scoped package name (a.b.oglx)

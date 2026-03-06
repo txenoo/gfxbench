@@ -35,6 +35,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
 #ifndef Foundation_DynamicFactory_INCLUDED
 #define Foundation_DynamicFactory_INCLUDED

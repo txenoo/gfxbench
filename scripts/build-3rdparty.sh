@@ -69,7 +69,7 @@ fi
 
 zlib_OPTS="-DBUILD_SHARED_LIBS=0"
 libpng_OPTS="-DPNG_STATIC=1 -DPNG_SHARED=0"
-poco_OPTS="-DPOCO_STATIC=1 -DDISABLE_MONGODB=1 -DDISABLE_PDF=1 -DDISABLE_DATA=1 -DDISABLE_ZIP=1"
+poco_OPTS="-DPOCO_STATIC=1 -DDISABLE_MONGODB=1 -DDISABLE_PDF=1 -DDISABLE_DATA=1 -DDISABLE_ZIP=1 -DDISABLE_OPENSSL=1"
 glfw_OPTS="-DGLFW_BUILD_EXAMPLES=0 -DGLFW_BUILD_TESTS=0"
 if [ "$USE_WAYLAND" == "true" ]; then
     glfw_OPTS+=" -DGLFW_USE_WAYLAND=1 -DGLFW_CLIENT_LIBRARY=glesv2"
@@ -125,7 +125,7 @@ case $PLATFORM in
 		libpng_OPTS+=" -DPNG_TESTS=0"
 	;;
 	linux)
-		PROJECTS+=" 3rdparty/glew 3rdparty/glfw"
+		#PROJECTS+=" 3rdparty/glew 3rdparty/glfw"
 		PROJECTS+=" frameworks/ngl/src/v1.0.3/loader"
 	;;
 	macosx)
