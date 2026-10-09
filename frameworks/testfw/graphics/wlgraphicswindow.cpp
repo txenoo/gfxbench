@@ -108,7 +108,7 @@ WLGraphicsWindow::~WLGraphicsWindow()
 }
 
 
-bool WLGraphicsWindow::create(int width, int height, const std::string& title)
+bool WLGraphicsWindow::create(int width, int height, const std::string& title, bool fullscreen)
 {
     NGLOG_INFO("WLGraphicsWindow::create");
     if (width <= 0 || height <= 0)
@@ -151,6 +151,10 @@ bool WLGraphicsWindow::create(int width, int height, const std::string& title)
 
     xdg_toplevel_set_title(waylandData.xdg_toplevel, "testfwapp");
     xdg_toplevel_add_listener(waylandData.xdg_toplevel, &toplevel_listener, &waylandData);
+    // Ask the compositor for fullscreen on its choice of output; the size it
+    // configures is applied in toplevel_configure.
+    if (fullscreen)
+        xdg_toplevel_set_fullscreen(waylandData.xdg_toplevel, NULL);
     wl_surface_commit(waylandData.surf);
     waylandData.wait_for_configure = true;
 

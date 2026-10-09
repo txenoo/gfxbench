@@ -193,7 +193,7 @@ WindowFactory::Wnd *WindowFactory::createEGL(const std::vector<tfw::ApiDefinitio
     wnd->create(width_, height_, "ANW + EGL", 3);//3==RGB888
 #elif defined DISPLAY_PROTOCOL_WAYLAND
     ng::scoped_ptr<WLGraphicsWindow> wnd(new WLGraphicsWindow(true));
-    requireex(wnd->create(width_, height_, "Wayland + EGL"));
+    requireex(wnd->create(width_, height_, "Wayland + EGL", fullscreen_));
 #elif defined HAVE_X11
     ng::scoped_ptr<XGraphicsWindow> wnd(new XGraphicsWindow());
     requireex(wnd->create(width_, height_, "X11 + EGL"));
@@ -365,7 +365,7 @@ WindowFactory::Wnd *WindowFactory::createHWND(const std::vector<tfw::ApiDefiniti
 #elif defined __linux__
 #ifdef DISPLAY_PROTOCOL_WAYLAND
     ng::scoped_ptr<WLGraphicsWindow> wnd(new WLGraphicsWindow(false));
-    requireex(wnd->create(width_, height_, "Wayland"));
+    requireex(wnd->create(width_, height_, "Wayland", fullscreen_));
     ng::scoped_ptr<WLGraphicsContext> wl_ctx(new WLGraphicsContext());
     wl_ctx->init(wnd->display(), wnd->surface() );
     return new Wnd(wnd.release(), 0, wl_ctx.release());
@@ -447,7 +447,7 @@ WindowFactory::Wnd *WindowFactory::createWaylandVulkan(const std::vector<tfw::Ap
 #ifdef DISPLAY_PROTOCOL_WAYLAND
    ng::scoped_ptr<WLGraphicsWindow> wnd(new WLGraphicsWindow(false));
     ng::scoped_ptr<WLGraphicsContext> wl_ctx(new WLGraphicsContext());
-    requireex(wnd->create(width_, height_, "Wayland + EGL"));
+    requireex(wnd->create(width_, height_, "Wayland + EGL", fullscreen_));
     wl_ctx->init(wnd->display(), wnd->surface() );
     return new Wnd(wnd.release(), 0, wl_ctx.release());
 #else

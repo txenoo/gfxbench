@@ -43,7 +43,7 @@ public:
 
     WLGraphicsWindow(bool createEGL);
     virtual ~WLGraphicsWindow();
-    bool create(int width, int height, const std::string& title);
+    bool create(int width, int height, const std::string& title, bool fullscreen = false);
     virtual void pollEvents();
     virtual bool shouldClose();
     virtual void requestClose();
