@@ -59,7 +59,10 @@ static void toplevel_configure(void* data, struct xdg_toplevel* xdg_toplevel, in
         waylandData->width = width;
         waylandData->height = height;
 
-        wl_egl_window_resize(waylandData->eglWindow, width, height, 0, 0);
+        // The first configure (e.g. fullscreen) can arrive before the EGL
+        // window exists; create() then uses this size.
+        if (waylandData->eglWindow)
+            wl_egl_window_resize(waylandData->eglWindow, width, height, 0, 0);
     }
 }
 
@@ -163,6 +166,14 @@ bool WLGraphicsWindow::create(int width, int height, const std::string& title, b
 
 
     pollEvents();
+
+    // Use the size from the first configure if the compositor sent one
+    // (fullscreen); otherwise the requested size.
+    if (waylandData.width > 0 && waylandData.height > 0)
+    {
+        width = waylandData.width;
+        height = waylandData.height;
+    }
 
     static wl_region* region;
     region = wl_compositor_create_region(waylandData.compositor);
